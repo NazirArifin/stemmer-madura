@@ -1,1 +1,2 @@
-export declare const Greeter: (name: string) => string;
+#!/usr/bin/env node
+export {};
