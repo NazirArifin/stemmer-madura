@@ -1,2 +1,3 @@
-# stemmer-madura
-Tool stemmer untuk bahasa Madura
+# Stemmer Madura
+
+Stemmer untuk bahasa Madura menggunakan rule-base
