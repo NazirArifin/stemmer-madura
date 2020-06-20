@@ -1,15 +1,20 @@
 {
   "name": "stemmer-madura",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Stemmer untuk bahasa Madura menggunakan rule based",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": ["dist/**/*"],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:NazirArifin/stemmer-madura.git"
+  },
+  "keywords": ["stemmer", "madura", "bahasa madura", "nlp"],
+  "author": "Mohammad Nazir Arifin",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^3.9.5"
