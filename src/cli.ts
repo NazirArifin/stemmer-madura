@@ -25,13 +25,25 @@ const run = async() => {
     }
     const words = args._[0];
 
-    // TODO: -v for verbose mode (show all processes)
     // TODO: is file? then should stem file and save the result on other file
+    if (args.verbose) {
+      stemmer.verbose = true;
+    }
+
+    console.log(chalk.green.bold.underline(words));
 
     // let stem the word
     stemmer.input = words;
     const result = stemmer.stemWords();
-    console.log(chalk.green(result));
+    
+    // verbose mode
+    if (args.verbose) {
+      stemmer.logs.forEach((v: string) => {
+        console.log(chalk.blueBright(v));
+      });
+    }
+
+    console.log(chalk.green.bold.underline(result));
   } catch(err) {
     if (err) {
       switch (err) {

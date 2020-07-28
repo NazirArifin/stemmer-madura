@@ -43,7 +43,7 @@ class Files {
      * Check whether text file containing base words is exists
      *
      * First, we search on current working directory
-     * If fail the try to find in node_modules/stemmer-madura/lib
+     * If fail the try to find in node_modules/stemmer-madura
      *
      * @param {('base'|'stop')} type
      * @returns {Promise<string[]>}

@@ -78,6 +78,17 @@ class Stemmer {
     get input() {
         return this._input;
     }
+    // /**
+    //  * Array containing word variance as a result of modification and removal
+    //  *
+    //  * @private
+    //  * @type {string[]}
+    //  * @memberof Stemmer
+    //  */
+    // private _morphWords: string[] = [];
+    // get morphWords(): string[] {
+    //   return this._morphWords;
+    // }
     /**
      * Function for stem each word that already tokenized and normalized
      * The word was also pass the stopwords filter
@@ -93,6 +104,7 @@ class Stemmer {
         this.ruleIndex = 0;
         // cek awal apakah ada di kata dasar
         if (this.inBaseWords(word)) {
+            this.addLog(`Menemukan kata "${word}" untuk kata "${word}" di kata dasar`);
             return word;
         }
         while (true) {
@@ -104,15 +116,30 @@ class Stemmer {
                 const w = this.currentWords[k];
                 // hanya jika di test bernilai true
                 if (rule.pattern.test(w)) {
+                    this.addLog(`🕓 Menjalankan rule ${rule.name} pada kata "${w}" 🕓`);
                     if (!rule.hasVariance) {
                         const morph = w.replace(rule.pattern, rule.replacement);
+                        this.addLog(`⇨ Mengubah kata "${w}" menjadi: "${morph}"`);
                         if (this.inBaseWords(morph)) {
                             // ada di kata dasar
+                            this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
                             return morph;
                         }
                         else {
                             // masih tidak ditemukan di kata dasar
-                            this.currentWords[k] = morph;
+                            if (rule.recover) {
+                                // kembalikan ke kata sebelum diproses
+                                this.addLog(`⇨ Mengembalikan kata "${morph}" ke "${w}"`);
+                                this.currentWords[k] = w;
+                                // jika recover both maka yang dibuang juga dimasukkan
+                                if (rule.recover == 'both') {
+                                    this.currentWords.push(morph);
+                                }
+                            }
+                            else {
+                                // gunakan kata yang baru
+                                this.currentWords[k] = morph;
+                            }
                         }
                     }
                     else {
@@ -125,8 +152,10 @@ class Stemmer {
                         for (let i = 0; i < rule.replacements.length; i++) {
                             const r = rule.replacements[i];
                             const morph = w.replace(rule.pattern, r);
+                            this.addLog(`⇨ Mengubah kata "${w}" menjadi: "${morph}"`);
                             if (this.inBaseWords(morph)) {
                                 // ada di kata dasar
+                                this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
                                 return morph;
                             }
                             morphs.push(morph);
@@ -147,7 +176,8 @@ class Stemmer {
                 break;
             }
         }
-        console.log(this.currentWords.join(', '));
+        // console.log(this.currentWords.join(', '));
+        this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
         return this.originalWord;
     }
     /**
@@ -164,16 +194,16 @@ class Stemmer {
         const splitChar = ' ';
         // tokenizing into tokens
         this._words = this._input.split(splitChar);
-        this.addLog(`Tokenisasi ${this._input} menjadi: [${this._words.join(', ')}]`);
+        this.addLog(`✔ Tokenisasi ${this._input} menjadi: [${this._words.join(', ')}]`);
         // copy array input to result since we will only modify
         // the result rather than the input
         this._results = [...this._words];
         // normalized, casefolding
         this._results = this._results.map(word => this.normalizeString(word));
-        this.addLog(`Casefolding [${this._words.join(', ')}] menjadi: [${this._results.join(', ')}]`);
+        this.addLog(`✔ Casefolding [${this._words.join(', ')}] menjadi: [${this._results.join(', ')}]`);
         // stopword removal and remove word with length below 3 character
         this._results.filter(v => !this.inStopWords(v) && v.length > 3);
-        this.addLog(`Membuang stopwords menjadi: [${this._words.join(', ')}]`);
+        this.addLog(`✔ Membuang stopwords menjadi: [${this._words.join(', ')}]`);
         // process each word
         this._results = this._results.map(word => this.stemWord(word));
         return this._results.join(splitChar);

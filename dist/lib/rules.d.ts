@@ -4,6 +4,7 @@ interface Rule {
     replacement: string;
     replacements: string[];
     hasVariance: boolean;
+    recover: true | false | 'both';
 }
 declare const rules: Rule[];
 export default rules;

@@ -3,7 +3,8 @@ interface Rule {
   pattern: RegExp;
   replacement: string;
   replacements: string[];
-  hasVariance: boolean
+  hasVariance: boolean;
+  recover: true|false|'both';
 }
 
 const rules: Rule[] = [
@@ -12,7 +13,16 @@ const rules: Rule[] = [
     name: 'Reduplication Removal', 
     pattern: new RegExp('^.+\-(.+)$'), 
     replacement: '$1', replacements: [],
-    hasVariance: false 
+    hasVariance: false, recover: false
+  },
+
+  // Nah Suffix Removal
+  // Sepertinya tidak baku, mungkin bentuk dari akhiran "na" (romana, kalambina)
+  {
+    name: 'Nah Suffix Removal',
+    pattern: new RegExp('^(.+)nah$'),
+    replacement: '$1', replacements: [],
+    hasVariance: false, recover: true
   },
 
   // Plain Suffix Removal 1
@@ -20,7 +30,7 @@ const rules: Rule[] = [
     name: 'Plain Suffix Removal 1',
     pattern: new RegExp('^(.+)(ya|na|an|ih|eh|ah)$'),
     replacement: '$1', replacements: [],
-    hasVariance: false
+    hasVariance: false, recover: 'both'
   },
 
   // Plain Suffix Removal 2
@@ -28,7 +38,7 @@ const rules: Rule[] = [
     name: 'Plain Suffix Removal 2',
     pattern: new RegExp('^(.+)([ae])$'),
     replacement: '$1', replacements: [],
-    hasVariance: false
+    hasVariance: false, recover: 'both'
   },
 
   // Aghi Suffix Removal
@@ -36,7 +46,7 @@ const rules: Rule[] = [
     name: 'Aghi Suffix Removal',
     pattern: new RegExp('^(.+)aghi$'),
     replacement: '$1', replacements: [],
-    hasVariance: false
+    hasVariance: false, recover: false
   },
 
   // Plain Prefix Removal 1
@@ -44,7 +54,7 @@ const rules: Rule[] = [
     name: 'Plain Prefix Removal 1', 
     pattern: new RegExp('^([ae])(.+)$'), 
     replacement: '$2', replacements: [],
-    hasVariance: false 
+    hasVariance: false, recover: false
   },
 
   // Plain Prefix Removal 2
@@ -52,23 +62,23 @@ const rules: Rule[] = [
     name: 'Plain Prefix Removal 2', 
     pattern: new RegExp('^(ta|ma|ka|sa|pa|pe)(.+)$'), 
     replacement: '$2', replacements: [],
-    hasVariance: false 
+    hasVariance: false, recover: true
   },
 
   // Plain Prefix Removal 3
   { 
     name: 'Plain Prefix Removal 3', 
-    pattern: new RegExp('^(par|pang|nga)([^aeuio].+)$'), 
+    pattern: new RegExp('^(par)([^aeuio].+)$'),
     replacement: '$2', replacements: [],
-    hasVariance: true
+    hasVariance: false, recover: false
   },
 
   // Ng Prefix Removal 1
-  { 
+  {
     name: 'Ng Prefix Removal 1', 
-    pattern: new RegExp('^ng([lr].+)$'), 
+    pattern: new RegExp('^ng(.+)$'), 
     replacement: '$1', replacements: [],
-    hasVariance: false
+    hasVariance: false, recover: true
   },
 
   // Ng Prefix Modification 2
@@ -76,7 +86,7 @@ const rules: Rule[] = [
     name: 'Ng Prefix Modification 2', 
     pattern: new RegExp('^ng([aeio].+)$'), 
     replacement: '', replacements: ['k$1', 'g$1', 'gh$1'], 
-    hasVariance: true 
+    hasVariance: true, recover: false
   },
 
   // M Prefix Modification
@@ -84,7 +94,7 @@ const rules: Rule[] = [
     name: 'M Prefix Modification',
     pattern: new RegExp('^m([aeou].+)$'),
     replacement: '', replacements: ['b$1', 'p$1', 'bh$1'],
-    hasVariance: true
+    hasVariance: true, recover: false
   },
 
   // NY Prefix Modification
@@ -92,7 +102,7 @@ const rules: Rule[] = [
     name: 'NY Prefix Modification',
     pattern: new RegExp('^ny([aeo].+)$'),
     replacement: '', replacements: ['s$1', 'c$1', 'j$1', 'jh$1'],
-    hasVariance: true
+    hasVariance: true, recover: false
   },
 
   // N Prefix Modification
@@ -100,7 +110,7 @@ const rules: Rule[] = [
     name: 'N Prefix Modification',
     pattern: new RegExp('^n([ao].+)$'),
     replacement: '', replacements: ['t$1', 'd$1', 'dh$1'],
-    hasVariance: true
+    hasVariance: true, recover: false
   },
 
   // Plain Infix Removal
@@ -108,7 +118,7 @@ const rules: Rule[] = [
     name: 'Plain Infix Removal',
     pattern: new RegExp('^([^aiueo]{1,2})(al|ar|en|in|om|um)(.+)$'),
     replacement: '$1$3', replacements: [],
-    hasVariance: false
+    hasVariance: false, recover: false
   }
 ];
 
