@@ -34,3 +34,21 @@ stemmer-madura nglerek --verbose
 
 ## Penggunaan Sebagai Package
 
+Contoh berikut adalah kode TypeScript pengunaan stemmer-madura untuk melakukan proses stemming kata "nglerek"
+
+```ts
+import { Stemmer, Files } from 'stemmer-madura';
+
+...
+  const stemmer: Stemmer = new Stemmer;
+  // check the existance of file basewords.txt
+  const myFile: Files = new Files(stemmer);
+  stemmer.baseWords = await myFile.isWordsFileExists('base');
+
+  // check the existance of file stopwords.txt
+  stemmer.stopWords = await myFile.isWordsFileExists('stop');
+
+  stemmer.input = 'nglerek';
+  console.log(stemmer.stemWords());
+...
+```
