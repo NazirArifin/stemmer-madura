@@ -30,7 +30,7 @@ const run = async() => {
       stemmer.verbose = true;
     }
 
-    console.log(chalk.green.bold.underline(words));
+    console.log(chalk.whiteBright.bold.underline(words));
 
     // let stem the word
     stemmer.input = words;

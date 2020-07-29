@@ -4,6 +4,33 @@
 
 Stemmer untuk bahasa Madura menggunakan rule-based.
 
-## UNDER DEVELOPMENT
+## Penggunaan Dalam Mode CLI
 
-__Proyek ini masih dalam pengembangan, jangan digunakan dulu!!!__
+### Instalasi
+
+Agar dapat menggunakan stemmer-madura dalam CLI maka package harus diinstall global
+
+```sh
+npm install -g stemmer-madura
+```
+
+### Penggunaan
+
+Stemmer-madura akan mencari file kata dasar (defaultnya: __basewords.txt__) dan file kata umum (defaulnya: __stopwords.txt__) pada direktori aktif dimana perintah dijalankan.  Contoh penggunaan dalam mode CLI adalah:
+
+```sh
+stemmer-madura nglerek
+```
+
+Output yang dihasilkan terdiri dari dua baris yaitu kata input dan kata hasil stemming
+
+### Verbose
+
+Dengan menambahkan argument ```--verbose``` akan didapatkan informasi perubahan kata hingga didapatkan kata dasar.
+
+```sh
+stemmer-madura nglerek --verbose
+```
+
+## Penggunaan Sebagai Package
+

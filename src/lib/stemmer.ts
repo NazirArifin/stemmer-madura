@@ -193,7 +193,7 @@ class Stemmer {
 
     // stopword removal and remove word with length below 3 character
     this._results.filter(v => ! this.inStopWords(v) && v.length > 3);
-    this.addLog(`✔ Membuang stopwords menjadi: [${this._words.join(', ')}]`);
+    this.addLog(`✔ Membuang stopwords menjadi: [${this._results.join(', ')}]`);
 
     // process each word
     this._results = this._results.map(word => this.stemWord(word));

@@ -1,11 +1,13 @@
 {
   "name": "stemmer-madura",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Stemmer untuk bahasa Madura menggunakan rule based",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "basewords.txt",
+    "stopwords.txt"
   ],
   "bin": {
     "stemmer-madura": "dist/cli.js"
