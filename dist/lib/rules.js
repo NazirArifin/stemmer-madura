@@ -19,7 +19,7 @@ const rules = [
     // Plain Suffix Removal 1
     {
         name: 'Plain Suffix Removal 1',
-        pattern: new RegExp('^(.+)(ya|na|an|ih|eh|ah)$'),
+        pattern: new RegExp('^(.+)(ya|na|an|ih|eh|en|ah)$'),
         replacement: '$1', replacements: [],
         hasVariance: false, recover: 'both'
     },
@@ -49,7 +49,7 @@ const rules = [
         name: 'Plain Prefix Removal 2',
         pattern: new RegExp('^(ta|ma|ka|sa|pa|pe)(.+)$'),
         replacement: '$2', replacements: [],
-        hasVariance: false, recover: true
+        hasVariance: false, recover: "both"
     },
     // Plain Prefix Removal 3
     {
