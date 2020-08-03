@@ -30,19 +30,40 @@ declare class Files {
     private _stemmer;
     constructor(stemmer: Stemmer);
     /**
+     * Read baseword and stopword syncronously and then split into array
+     *
+     * @param {('base'|'stop')} type
+     * @returns {string[]}
+     * @memberof Files
+     */
+    readWordsFile(type: 'base' | 'stop'): string[];
+    /**
+     * Split content of file by line break
+     *
+     * @private
+     * @param {string} content
+     * @returns {string[]}
+     * @memberof Files
+     */
+    private splitWordsFile;
+    /**
+     * DEPRECATED
      * Check whether text file containing base words is exists
      *
      * First, we search on current working directory
      * If fail the try to find in node_modules/stemmer-madura
      *
+     * @deprecated
      * @param {('base'|'stop')} type
      * @returns {Promise<string[]>}
      * @memberof Files
      */
     isWordsFileExists(type: 'base' | 'stop'): Promise<string[]>;
     /**
+     * DEPRECATED
      * read file syncronously and then split into array
      *
+     * @deprecated
      * @private
      * @param {string} file
      * @returns {string[]}

@@ -8,16 +8,14 @@ import Stemmer from "./lib/stemmer";
 
 clear();
 
-const run = async() => {
+const run = () => {
   try {
     const stemmer: Stemmer = new Stemmer;
     
-    // check the existance of file basewords.txt
+    // load basewords and stopwords file
     const myFile: Files = new Files(stemmer);
-    stemmer.baseWords = await myFile.isWordsFileExists('base');
-
-    // check the existance of file stopwords.txt
-    stemmer.stopWords = await myFile.isWordsFileExists('stop');
+    stemmer.baseWords = myFile.readWordsFile('base');
+    stemmer.stopWords = myFile.readWordsFile('stop');
     
     const args = minimist(process.argv.slice(2));
     if (args._[0] == undefined) {
@@ -30,7 +28,7 @@ const run = async() => {
       stemmer.verbose = true;
     }
 
-    console.log(chalk.whiteBright.bold.underline(words));
+    console.log(chalk.whiteBright.bold(words));
 
     // let stem the word
     stemmer.input = words;
@@ -43,7 +41,7 @@ const run = async() => {
       });
     }
 
-    console.log(chalk.green.bold.underline(result));
+    console.log(chalk.green.bold(result));
   } catch(err) {
     if (err) {
       switch (err) {

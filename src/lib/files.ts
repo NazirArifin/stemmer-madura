@@ -43,11 +43,54 @@ class Files {
   }
 
   /**
+   * Read baseword and stopword syncronously and then split into array
+   *
+   * @param {('base'|'stop')} type
+   * @returns {string[]}
+   * @memberof Files
+   */
+  public readWordsFile(type: 'base'|'stop'): string[] {
+    const cwd: string = process.cwd();
+    const fwords: string = type == 'base' ? this._baseWords : this._stopWords;
+    let file: string = path.join(cwd, fwords);
+    try {
+      let data = fs.readFileSync(file, { encoding: 'utf-8' });
+      if (data) {
+        return this.splitWordsFile(data);
+      } else {
+        file = path.join(cwd, 'node_modules', 'stemmer-madura', fwords);
+        data = fs.readFileSync(file, { encoding: 'utf-8' });
+        if (data) {
+          return this.splitWordsFile(data);
+        }
+      }
+    } catch(err) {
+      throw(404);
+    }
+    return [];
+  }
+
+  /**
+   * Split content of file by line break
+   *
+   * @private
+   * @param {string} content
+   * @returns {string[]}
+   * @memberof Files
+   */
+  private splitWordsFile(content: string): string[] {
+    const lf = this.getLineBreakChar(content);
+    return content.split(lf).filter(e => e.length > 0).map(v => this._stemmer.normalizeString(v));
+  }
+
+  /**
+   * DEPRECATED
    * Check whether text file containing base words is exists
    * 
    * First, we search on current working directory
    * If fail the try to find in node_modules/stemmer-madura
    *
+   * @deprecated
    * @param {('base'|'stop')} type
    * @returns {Promise<string[]>}
    * @memberof Files
@@ -76,8 +119,10 @@ class Files {
   }
 
   /**
+   * DEPRECATED
    * read file syncronously and then split into array
    *
+   * @deprecated
    * @private
    * @param {string} file
    * @returns {string[]}
