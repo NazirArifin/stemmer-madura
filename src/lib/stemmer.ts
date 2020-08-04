@@ -45,6 +45,19 @@ class Stemmer {
   }
 
   /**
+   * Status whether stemmer can found baseword or not
+   * true if success and false (default) if not
+   *
+   * @private
+   * @type {boolean}
+   * @memberof Stemmer
+   */
+  private _success: boolean = false;
+  get isSuccess(): boolean {
+    return this._success;
+  }
+
+  /**
    * Array of tokens to be stemmed
    *
    * @private
@@ -56,19 +69,19 @@ class Stemmer {
 
   private originalWord: string = '';
   private ruleIndex: number = -1;
-  private currentWords: string[] = [];
 
-  // /**
-  //  * Array containing word variance as a result of modification and removal
-  //  *
-  //  * @private
-  //  * @type {string[]}
-  //  * @memberof Stemmer
-  //  */
-  // private _morphWords: string[] = [];
-  // get morphWords(): string[] {
-  //   return this._morphWords;
-  // }
+  /**
+   * Array containing processing words and its variances
+   * This will be empty on first word stemming process
+   *
+   * @private
+   * @type {string[]}
+   * @memberof Stemmer
+   */
+  private currentWords: string[] = [];
+  get processingWords(): string[] {
+    return this.currentWords;
+  }
 
   /**
    * Function for stem each word that already tokenized and normalized
@@ -86,7 +99,8 @@ class Stemmer {
 
     // cek awal apakah ada di kata dasar
     if (this.inBaseWords(word)) {
-      this.addLog(`Menemukan kata "${word}" untuk kata "${word}" di kata dasar`);
+      this._success = true;
+      this.addLog(`🌟🌟 Menemukan kata "${word}" untuk kata "${word}" di kata dasar 🌟🌟`);
       return word;
     }
 
@@ -109,6 +123,7 @@ class Stemmer {
             
             if (this.inBaseWords(morph)) {
               // ada di kata dasar
+              this._success = true;
               this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
               return morph;
             } else {
@@ -128,7 +143,7 @@ class Stemmer {
             }
           } else {
             /**
-             * menghasilkan beberapa variance kata, 
+             * menghasilkan beberapa variasi kata, 
              * jika masih tidak ketemu di kata dasar, array di current_word di splice, dan 
              * kata yang sekarang diganti dengan kata yang baru
              */
@@ -140,6 +155,7 @@ class Stemmer {
               this.addLog(`⇨ Mengubah kata "${w}" menjadi: "${morph}"`);
               if (this.inBaseWords(morph)) {
                 // ada di kata dasar
+                this._success = true;
                 this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
                 return morph;
               }
@@ -163,7 +179,6 @@ class Stemmer {
       }
     }
 
-    // console.log(this.currentWords.join(', '));
     this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
     return this.originalWord;
   }
@@ -195,10 +210,12 @@ class Stemmer {
     this._results.filter(v => ! this.inStopWords(v) && v.length > 3);
     this.addLog(`✔ Membuang stopwords menjadi: [${this._results.join(', ')}]`);
 
-    // process each word
-    this._results = this._results.map(word => this.stemWord(word));
-    
-    return this._results.join(splitChar);
+    if (this._results.length > 0) {
+      // process each word
+      this._results = this._results.map(word => this.stemWord(word));
+      return this._results.join(splitChar);
+    }
+    return '';
   }
 
   /**

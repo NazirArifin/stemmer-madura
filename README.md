@@ -16,13 +16,15 @@ npm install -g stemmer-madura
 
 ### Penggunaan
 
-Stemmer-madura akan mencari file kata dasar (defaultnya: __basewords.txt__) dan file kata umum (defaulnya: __stopwords.txt__) pada direktori aktif dimana perintah dijalankan.  Contoh penggunaan dalam mode CLI adalah:
+Stemmer-madura akan mencari file kata dasar (defaultnya: __basewords.txt__) dan file kata umum (defaulnya: __stopwords.txt__) pada direktori aktif dimana perintah dijalankan. Dalam package ini disertakan file [basewords.txt](https://github.com/NazirArifin/stemmer-madura/raw/master/basewords.txt) dan [stopwords.txt](https://github.com/NazirArifin/stemmer-madura/raw/master/stopwords.txt). 
+
+Contoh penggunaan dalam mode CLI adalah:
 
 ```sh
 stemmer-madura nglerek
 ```
 
-Output yang dihasilkan terdiri dari dua baris yaitu kata input dan kata hasil stemming
+Output yang dihasilkan terdiri dari dua baris yaitu kata input dan kata hasil stemming jika sukses dan hanya satu baris kata input jika gagal
 
 ### Verbose
 
@@ -39,16 +41,13 @@ Contoh berikut adalah kode TypeScript pengunaan stemmer-madura untuk melakukan p
 ```ts
 import { Stemmer, Files } from 'stemmer-madura';
 
-...
-  const stemmer: Stemmer = new Stemmer;
-  // check the existance of file basewords.txt
-  const myFile: Files = new Files(stemmer);
-  stemmer.baseWords = await myFile.isWordsFileExists('base');
+const stemmer: Stemmer = new Stemmer;
 
-  // check the existance of file stopwords.txt
-  stemmer.stopWords = await myFile.isWordsFileExists('stop');
+// load basewords and stopwords file
+const myFile: Files = new Files(stemmer);
+stemmer.baseWords = myFile.readWordsFile('base');
+stemmer.stopWords = myFile.readWordsFile('stop');
 
-  stemmer.input = 'nglerek';
-  console.log(stemmer.stemWords());
-...
+stemmer.input = 'nglerek';
+console.log(stemmer.stemWords());
 ```

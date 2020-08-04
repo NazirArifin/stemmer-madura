@@ -41,7 +41,10 @@ const run = () => {
       });
     }
 
-    console.log(chalk.green.bold(result));
+    // only show if success
+    if (stemmer.isSuccess) {
+      console.log(chalk.green.bold(result));
+    }
   } catch(err) {
     if (err) {
       switch (err) {

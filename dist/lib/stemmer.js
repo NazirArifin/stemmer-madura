@@ -24,6 +24,15 @@ class Stemmer {
          */
         this._input = '';
         /**
+         * Status whether stemmer can found baseword or not
+         * true if success and false (default) if not
+         *
+         * @private
+         * @type {boolean}
+         * @memberof Stemmer
+         */
+        this._success = false;
+        /**
          * Array of tokens to be stemmed
          *
          * @private
@@ -34,6 +43,14 @@ class Stemmer {
         this._results = [];
         this.originalWord = '';
         this.ruleIndex = -1;
+        /**
+         * Array containing processing words and its variances
+         * This will be empty on first word stemming process
+         *
+         * @private
+         * @type {string[]}
+         * @memberof Stemmer
+         */
         this.currentWords = [];
         /**
          * list of basewords to check in
@@ -78,17 +95,12 @@ class Stemmer {
     get input() {
         return this._input;
     }
-    // /**
-    //  * Array containing word variance as a result of modification and removal
-    //  *
-    //  * @private
-    //  * @type {string[]}
-    //  * @memberof Stemmer
-    //  */
-    // private _morphWords: string[] = [];
-    // get morphWords(): string[] {
-    //   return this._morphWords;
-    // }
+    get isSuccess() {
+        return this._success;
+    }
+    get processingWords() {
+        return this.currentWords;
+    }
     /**
      * Function for stem each word that already tokenized and normalized
      * The word was also pass the stopwords filter
@@ -104,7 +116,8 @@ class Stemmer {
         this.ruleIndex = 0;
         // cek awal apakah ada di kata dasar
         if (this.inBaseWords(word)) {
-            this.addLog(`Menemukan kata "${word}" untuk kata "${word}" di kata dasar`);
+            this._success = true;
+            this.addLog(`🌟🌟 Menemukan kata "${word}" untuk kata "${word}" di kata dasar 🌟🌟`);
             return word;
         }
         while (true) {
@@ -122,6 +135,7 @@ class Stemmer {
                         this.addLog(`⇨ Mengubah kata "${w}" menjadi: "${morph}"`);
                         if (this.inBaseWords(morph)) {
                             // ada di kata dasar
+                            this._success = true;
                             this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
                             return morph;
                         }
@@ -144,7 +158,7 @@ class Stemmer {
                     }
                     else {
                         /**
-                         * menghasilkan beberapa variance kata,
+                         * menghasilkan beberapa variasi kata,
                          * jika masih tidak ketemu di kata dasar, array di current_word di splice, dan
                          * kata yang sekarang diganti dengan kata yang baru
                          */
@@ -155,6 +169,7 @@ class Stemmer {
                             this.addLog(`⇨ Mengubah kata "${w}" menjadi: "${morph}"`);
                             if (this.inBaseWords(morph)) {
                                 // ada di kata dasar
+                                this._success = true;
                                 this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
                                 return morph;
                             }
@@ -176,7 +191,6 @@ class Stemmer {
                 break;
             }
         }
-        // console.log(this.currentWords.join(', '));
         this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
         return this.originalWord;
     }
@@ -204,9 +218,12 @@ class Stemmer {
         // stopword removal and remove word with length below 3 character
         this._results.filter(v => !this.inStopWords(v) && v.length > 3);
         this.addLog(`✔ Membuang stopwords menjadi: [${this._results.join(', ')}]`);
-        // process each word
-        this._results = this._results.map(word => this.stemWord(word));
-        return this._results.join(splitChar);
+        if (this._results.length > 0) {
+            // process each word
+            this._results = this._results.map(word => this.stemWord(word));
+            return this._results.join(splitChar);
+        }
+        return '';
     }
     /**
      * casefolding and normalize text to remove accents diacritics

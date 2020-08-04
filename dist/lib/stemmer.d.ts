@@ -25,6 +25,16 @@ declare class Stemmer {
     set input(val: string);
     get input(): string;
     /**
+     * Status whether stemmer can found baseword or not
+     * true if success and false (default) if not
+     *
+     * @private
+     * @type {boolean}
+     * @memberof Stemmer
+     */
+    private _success;
+    get isSuccess(): boolean;
+    /**
      * Array of tokens to be stemmed
      *
      * @private
@@ -35,7 +45,16 @@ declare class Stemmer {
     private _results;
     private originalWord;
     private ruleIndex;
+    /**
+     * Array containing processing words and its variances
+     * This will be empty on first word stemming process
+     *
+     * @private
+     * @type {string[]}
+     * @memberof Stemmer
+     */
     private currentWords;
+    get processingWords(): string[];
     /**
      * Function for stem each word that already tokenized and normalized
      * The word was also pass the stopwords filter
