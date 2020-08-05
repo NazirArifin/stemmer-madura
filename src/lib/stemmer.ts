@@ -1,4 +1,5 @@
 import rules from './rules';
+import NGram from './ngram';
 
 class Stemmer {
   /**
@@ -55,6 +56,29 @@ class Stemmer {
   private _success: boolean = false;
   get isSuccess(): boolean {
     return this._success;
+  }
+
+  /**
+   * Whether use N-gram or not. This N-gram will only used when rule-based
+   * stemming fail
+   *
+   * @private
+   * @type {boolean}
+   * @memberof Stemmer
+   */
+  private _withNgram: boolean = false;
+  private _nGram: NGram|null = null;
+  set withNgram(mode: boolean) {
+    if (mode && this._nGram == null) {
+      throw(403);
+    }
+    this.withNgram = mode;
+  }
+  
+  constructor(nGram?: NGram) {
+    if (nGram) {
+      this._nGram = nGram;
+    }
   }
 
   /**
@@ -179,6 +203,11 @@ class Stemmer {
       }
     }
 
+    // coba temukan dengan n-gram hanya jika withNgram diset true
+    if (this._withNgram) {
+      
+    }
+
     this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
     return this.originalWord;
   }
@@ -207,7 +236,7 @@ class Stemmer {
     this.addLog(`✔ Casefolding [${this._words.join(', ')}] menjadi: [${this._results.join(', ')}]`);
 
     // stopword removal and remove word with length below 3 character
-    this._results.filter(v => ! this.inStopWords(v) && v.length > 3);
+    this._results = this._results.filter(v => ! this.inStopWords(v) && v.length > 3);
     this.addLog(`✔ Membuang stopwords menjadi: [${this._results.join(', ')}]`);
 
     if (this._results.length > 0) {

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const rules_1 = require("./rules");
 class Stemmer {
-    constructor() {
+    constructor(nGram) {
         /**
          * mode whether log process or not. when it set true
          * the messages will be saved in _logs variabel
@@ -32,6 +32,16 @@ class Stemmer {
          * @memberof Stemmer
          */
         this._success = false;
+        /**
+         * Whether use N-gram or not. This N-gram will only used when rule-based
+         * stemming fail
+         *
+         * @private
+         * @type {boolean}
+         * @memberof Stemmer
+         */
+        this._withNgram = false;
+        this._nGram = null;
         /**
          * Array of tokens to be stemmed
          *
@@ -72,6 +82,9 @@ class Stemmer {
          * @memberof Stemmer
          */
         this._stopWords = [];
+        if (nGram) {
+            this._nGram = nGram;
+        }
     }
     set verbose(val) {
         this._verbose = val;
@@ -97,6 +110,12 @@ class Stemmer {
     }
     get isSuccess() {
         return this._success;
+    }
+    set withNgram(mode) {
+        if (mode && this._nGram == null) {
+            throw (403);
+        }
+        this.withNgram = mode;
     }
     get processingWords() {
         return this.currentWords;
@@ -191,6 +210,9 @@ class Stemmer {
                 break;
             }
         }
+        // coba temukan dengan n-gram hanya jika withNgram diset true
+        if (this._withNgram) {
+        }
         this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
         return this.originalWord;
     }
@@ -216,7 +238,7 @@ class Stemmer {
         this._results = this._results.map(word => this.normalizeString(word));
         this.addLog(`✔ Casefolding [${this._words.join(', ')}] menjadi: [${this._results.join(', ')}]`);
         // stopword removal and remove word with length below 3 character
-        this._results.filter(v => !this.inStopWords(v) && v.length > 3);
+        this._results = this._results.filter(v => !this.inStopWords(v) && v.length > 3);
         this.addLog(`✔ Membuang stopwords menjadi: [${this._results.join(', ')}]`);
         if (this._results.length > 0) {
             // process each word

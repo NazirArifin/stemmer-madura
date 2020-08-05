@@ -1,3 +1,4 @@
+import NGram from './ngram';
 declare class Stemmer {
     /**
      * mode whether log process or not. when it set true
@@ -34,6 +35,18 @@ declare class Stemmer {
      */
     private _success;
     get isSuccess(): boolean;
+    /**
+     * Whether use N-gram or not. This N-gram will only used when rule-based
+     * stemming fail
+     *
+     * @private
+     * @type {boolean}
+     * @memberof Stemmer
+     */
+    private _withNgram;
+    private _nGram;
+    set withNgram(mode: boolean);
+    constructor(nGram?: NGram);
     /**
      * Array of tokens to be stemmed
      *
