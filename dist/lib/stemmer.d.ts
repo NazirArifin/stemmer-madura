@@ -1,4 +1,3 @@
-import NGram from './ngram';
 declare class Stemmer {
     /**
      * mode whether log process or not. when it set true
@@ -44,9 +43,9 @@ declare class Stemmer {
      * @memberof Stemmer
      */
     private _withNgram;
-    private _nGram;
     set withNgram(mode: boolean);
-    constructor(nGram?: NGram);
+    private _ngGramThreshold;
+    set ngGramThreshold(threshold: number);
     /**
      * Array of tokens to be stemmed
      *

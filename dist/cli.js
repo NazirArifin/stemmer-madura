@@ -26,6 +26,8 @@ const run = () => {
         console.log(chalk.whiteBright.bold(words));
         // let stem the word
         stemmer.input = words;
+        // ngram
+        stemmer.withNgram = true;
         const result = stemmer.stemWords();
         // verbose mode
         if (args.verbose) {

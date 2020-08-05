@@ -67,18 +67,12 @@ class Stemmer {
    * @memberof Stemmer
    */
   private _withNgram: boolean = false;
-  private _nGram: NGram|null = null;
   set withNgram(mode: boolean) {
-    if (mode && this._nGram == null) {
-      throw(403);
-    }
-    this.withNgram = mode;
+    this._withNgram = mode;
   }
-  
-  constructor(nGram?: NGram) {
-    if (nGram) {
-      this._nGram = nGram;
-    }
+  private _ngGramThreshold: number = 0.66;
+  set ngGramThreshold(threshold: number) {
+    this._ngGramThreshold = threshold;
   }
 
   /**
@@ -205,7 +199,17 @@ class Stemmer {
 
     // coba temukan dengan n-gram hanya jika withNgram diset true
     if (this._withNgram) {
-      
+      for (let i = 0; i < this._baseWords.length; i++) {
+        const baseWord = this._baseWords[i];
+        const nGram: NGram = new NGram(baseWord, word);
+        const value = nGram.calculate();
+
+        if (value >= this._ngGramThreshold) {
+          this._success = true;
+          this.addLog(`🌟🌟 Menemukan kata "${baseWord}" untuk kata "${word}" di kata dasar 🌟🌟`);
+          return baseWord;
+        }
+      }
     }
 
     this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);

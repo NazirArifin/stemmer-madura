@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const rules_1 = require("./rules");
+const ngram_1 = require("./ngram");
 class Stemmer {
-    constructor(nGram) {
+    constructor() {
         /**
          * mode whether log process or not. when it set true
          * the messages will be saved in _logs variabel
@@ -41,7 +42,7 @@ class Stemmer {
          * @memberof Stemmer
          */
         this._withNgram = false;
-        this._nGram = null;
+        this._ngGramThreshold = 0.66;
         /**
          * Array of tokens to be stemmed
          *
@@ -82,9 +83,6 @@ class Stemmer {
          * @memberof Stemmer
          */
         this._stopWords = [];
-        if (nGram) {
-            this._nGram = nGram;
-        }
     }
     set verbose(val) {
         this._verbose = val;
@@ -112,10 +110,10 @@ class Stemmer {
         return this._success;
     }
     set withNgram(mode) {
-        if (mode && this._nGram == null) {
-            throw (403);
-        }
-        this.withNgram = mode;
+        this._withNgram = mode;
+    }
+    set ngGramThreshold(threshold) {
+        this._ngGramThreshold = threshold;
     }
     get processingWords() {
         return this.currentWords;
@@ -212,6 +210,16 @@ class Stemmer {
         }
         // coba temukan dengan n-gram hanya jika withNgram diset true
         if (this._withNgram) {
+            for (let i = 0; i < this._baseWords.length; i++) {
+                const baseWord = this._baseWords[i];
+                const nGram = new ngram_1.default(baseWord, word);
+                const value = nGram.calculate();
+                if (value >= this._ngGramThreshold) {
+                    this._success = true;
+                    this.addLog(`🌟🌟 Menemukan kata "${baseWord}" untuk kata "${word}" di kata dasar 🌟🌟`);
+                    return baseWord;
+                }
+            }
         }
         this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
         return this.originalWord;

@@ -32,6 +32,8 @@ const run = () => {
 
     // let stem the word
     stemmer.input = words;
+    // ngram
+    stemmer.withNgram = true;
     const result = stemmer.stemWords();
     
     // verbose mode
