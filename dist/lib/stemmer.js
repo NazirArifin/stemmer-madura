@@ -6,15 +6,31 @@ class Stemmer {
     constructor() {
         /**
          * mode whether log process or not. when it set true
-         * the messages will be saved in _logs variabel
-         * Default value is false
+         * the messages will be saved in _logs variabel. Default value is false
          *
          * @private
          * @type {boolean}
          * @memberof Stemmer
          */
         this._verbose = false;
+        /**
+         * Variabel containing logs for last stemming process
+         *
+         * @private
+         * @type {string[]}
+         * @memberof Stemmer
+         */
         this._logs = [];
+        /**
+         * Variabel containing all logs. This will be filled when stemming process of word
+         * started. This variable is used for multiple words input since _logs only save
+         * log for last stemming process
+         *
+         * @private
+         * @type {string[][]}
+         * @memberof Stemmer
+         */
+        this._fullLogs = [];
         /**
          * RAW INPUT word(s) to be stemmed
          * The setter will also do normalizing process on input
@@ -87,12 +103,20 @@ class Stemmer {
     set verbose(val) {
         this._verbose = val;
     }
-    get logs() {
-        return this._logs;
-    }
     addLog(log) {
         if (this._verbose) {
             this._logs.push(log);
+        }
+    }
+    get fullLogs() {
+        return this._fullLogs;
+    }
+    dumpLogs() {
+        if (this._verbose) {
+            if (this._logs.length > 0) {
+                this._fullLogs.push(this._logs);
+                this._logs = [];
+            }
         }
     }
     set input(val) {
@@ -131,10 +155,13 @@ class Stemmer {
         this.originalWord = word;
         this.currentWords = [word];
         this.ruleIndex = 0;
+
+        this.addLog(`⚡ Memproses kata "${word}" ⚡`);
         // cek awal apakah ada di kata dasar
         if (this.inBaseWords(word)) {
             this._success = true;
-            this.addLog(`🌟🌟 Menemukan kata "${word}" untuk kata "${word}" di kata dasar 🌟🌟`);
+            this.addLog(`🌟 Menemukan kata "${word}" untuk kata "${word}" di kata dasar 🌟`);
+            this.dumpLogs();
             return word;
         }
         while (true) {
@@ -146,14 +173,15 @@ class Stemmer {
                 const w = this.currentWords[k];
                 // hanya jika di test bernilai true
                 if (rule.pattern.test(w)) {
-                    this.addLog(`🕓 Menjalankan rule ${rule.name} pada kata "${w}" 🕓`);
+                    this.addLog(`🔥 Menjalankan rule "${rule.name}" pada kata "${w}" 🔥`);
                     if (!rule.hasVariance) {
                         const morph = w.replace(rule.pattern, rule.replacement);
                         this.addLog(`⇨ Mengubah kata "${w}" menjadi: "${morph}"`);
                         if (this.inBaseWords(morph)) {
                             // ada di kata dasar
                             this._success = true;
-                            this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
+                            this.addLog(`🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟`);
+                            this.dumpLogs();
                             return morph;
                         }
                         else {
@@ -187,7 +215,8 @@ class Stemmer {
                             if (this.inBaseWords(morph)) {
                                 // ada di kata dasar
                                 this._success = true;
-                                this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
+                                this.addLog(`🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟`);
+                                this.dumpLogs();
                                 return morph;
                             }
                             morphs.push(morph);
@@ -216,12 +245,14 @@ class Stemmer {
                 const value = nGram.calculate();
                 if (value >= this._ngGramThreshold) {
                     this._success = true;
-                    this.addLog(`🌟🌟 Menemukan kata "${baseWord}" untuk kata "${word}" di kata dasar 🌟🌟`);
+                    this.addLog(`🌟 Menemukan kata "${baseWord}" untuk kata "${word}" di kata dasar 🌟`);
+                    this.dumpLogs();
                     return baseWord;
                 }
             }
         }
         this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
+        this.dumpLogs();
         return this.originalWord;
     }
     /**
@@ -238,16 +269,18 @@ class Stemmer {
         const splitChar = ' ';
         // tokenizing into tokens
         this._words = this._input.split(splitChar);
-        this.addLog(`✔ Tokenisasi ${this._input} menjadi: [${this._words.join(', ')}]`);
+        this.addLog(`✔ Tokenisasi input: "${this._input}" menjadi: [${this._words.join(', ')}]`);
         // copy array input to result since we will only modify
         // the result rather than the input
         this._results = [...this._words];
         // normalized, casefolding
         this._results = this._results.map(word => this.normalizeString(word));
-        this.addLog(`✔ Casefolding [${this._words.join(', ')}] menjadi: [${this._results.join(', ')}]`);
+        this.addLog(`✔ Proses casefolding menjadi: [${this._results.join(', ')}]`);
         // stopword removal and remove word with length below 3 character
         this._results = this._results.filter(v => !this.inStopWords(v) && v.length > 3);
-        this.addLog(`✔ Membuang stopwords menjadi: [${this._results.join(', ')}]`);
+        this.addLog(`✔ Proses pembuangan stopwords menjadi: [${this._results.join(', ')}]`);
+
+        this.dumpLogs();
         if (this._results.length > 0) {
             // process each word
             this._results = this._results.map(word => this.stemWord(word));

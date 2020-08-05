@@ -31,8 +31,13 @@ const run = () => {
         const result = stemmer.stemWords();
         // verbose mode
         if (args.verbose) {
-            stemmer.logs.forEach((v) => {
-                console.log(chalk.blueBright(v));
+            stemmer.fullLogs.forEach((m, i) => {
+                if (i > 0) {
+                    console.log(chalk.blueBright('------------------------------------'));
+                }
+                m.forEach((v) => {
+                    console.log(chalk.blueBright(v));
+                });
             });
         }
         // only show if success

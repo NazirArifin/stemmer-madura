@@ -1,8 +1,7 @@
 declare class Stemmer {
     /**
      * mode whether log process or not. when it set true
-     * the messages will be saved in _logs variabel
-     * Default value is false
+     * the messages will be saved in _logs variabel. Default value is false
      *
      * @private
      * @type {boolean}
@@ -10,9 +9,27 @@ declare class Stemmer {
      */
     private _verbose;
     set verbose(val: boolean);
+    /**
+     * Variabel containing logs for last stemming process
+     *
+     * @private
+     * @type {string[]}
+     * @memberof Stemmer
+     */
     private _logs;
-    get logs(): string[];
     private addLog;
+    /**
+     * Variabel containing all logs. This will be filled when stemming process of word
+     * started. This variable is used for multiple words input since _logs only save
+     * log for last stemming process
+     *
+     * @private
+     * @type {string[][]}
+     * @memberof Stemmer
+     */
+    private _fullLogs;
+    get fullLogs(): string[][];
+    private dumpLogs;
     /**
      * RAW INPUT word(s) to be stemmed
      * The setter will also do normalizing process on input

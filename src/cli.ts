@@ -38,8 +38,13 @@ const run = () => {
     
     // verbose mode
     if (args.verbose) {
-      stemmer.logs.forEach((v: string) => {
-        console.log(chalk.blueBright(v));
+      stemmer.fullLogs.forEach((m: string[], i: number) => {
+        if (i > 0) {
+          console.log(chalk.blueBright('------------------------------------'));
+        }
+        m.forEach((v: string) => {
+          console.log(chalk.blueBright(v));
+        });
       });
     }
 

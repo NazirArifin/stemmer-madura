@@ -4,8 +4,7 @@ import NGram from './ngram';
 class Stemmer {
   /**
    * mode whether log process or not. when it set true
-   * the messages will be saved in _logs variabel
-   * Default value is false
+   * the messages will be saved in _logs variabel. Default value is false
    *
    * @private
    * @type {boolean}
@@ -15,13 +14,40 @@ class Stemmer {
   set verbose(val: boolean) {
     this._verbose = val;
   }
+
+  /**
+   * Variabel containing logs for last stemming process
+   *
+   * @private
+   * @type {string[]}
+   * @memberof Stemmer
+   */
   private _logs: string[] = [];
-  get logs(): string[] {
-    return this._logs;
-  }
   private addLog(log: string): void {
     if (this._verbose) {
       this._logs.push(log);
+    }
+  }
+  
+  /**
+   * Variabel containing all logs. This will be filled when stemming process of word
+   * started. This variable is used for multiple words input since _logs only save
+   * log for last stemming process
+   *
+   * @private
+   * @type {string[][]}
+   * @memberof Stemmer
+   */
+  private _fullLogs: string[][] = [];
+  get fullLogs(): string[][] {
+    return this._fullLogs;
+  }
+  private dumpLogs(): void {
+    if (this._verbose) {
+      if (this._logs.length > 0) {
+        this._fullLogs.push(this._logs);
+        this._logs = [];
+      }
     }
   }
 
@@ -115,11 +141,13 @@ class Stemmer {
     this.currentWords = [word];
     this.ruleIndex = 0;
 
+    this.addLog(`⚡⚡ Memproses kata "${word}" ⚡⚡`);
+
     // cek awal apakah ada di kata dasar
     if (this.inBaseWords(word)) {
       this._success = true;
-      this.addLog(`🌟🌟 Menemukan kata "${word}" untuk kata "${word}" di kata dasar 🌟🌟`);
-      return word;
+      this.addLog(`⭐⭐ Menemukan kata "${word}" untuk kata "${word}" di kata dasar ⭐⭐`);
+      this.dumpLogs(); return word;
     }
 
     while(true) {
@@ -133,7 +161,7 @@ class Stemmer {
 
         // hanya jika di test bernilai true
         if (rule.pattern.test(w)) {
-          this.addLog(`🕓 Menjalankan rule ${rule.name} pada kata "${w}" 🕓`);
+          this.addLog(`Menjalankan rule "${rule.name}" pada kata "${w}" 🔥`);
 
           if ( ! rule.hasVariance) {
             const morph = w.replace(rule.pattern, rule.replacement);
@@ -142,8 +170,8 @@ class Stemmer {
             if (this.inBaseWords(morph)) {
               // ada di kata dasar
               this._success = true;
-              this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
-              return morph;
+              this.addLog(`⭐⭐ Menemukan kata "${morph}" untuk kata "${word}" di kata dasar ⭐⭐`);
+              this.dumpLogs(); return morph;
             } else {
               // masih tidak ditemukan di kata dasar
               if (rule.recover) {
@@ -174,8 +202,8 @@ class Stemmer {
               if (this.inBaseWords(morph)) {
                 // ada di kata dasar
                 this._success = true;
-                this.addLog(`🌟🌟 Menemukan kata "${morph}" untuk kata "${word}" di kata dasar 🌟🌟`);
-                return morph;
+                this.addLog(`⭐⭐ Menemukan kata "${morph}" untuk kata "${word}" di kata dasar ⭐⭐`);
+                this.dumpLogs(); return morph;
               }
               morphs.push(morph);
             }
@@ -207,12 +235,13 @@ class Stemmer {
         if (value >= this._ngGramThreshold) {
           this._success = true;
           this.addLog(`🌟🌟 Menemukan kata "${baseWord}" untuk kata "${word}" di kata dasar 🌟🌟`);
-          return baseWord;
+          this.dumpLogs(); return baseWord;
         }
       }
     }
 
     this.addLog(`⚠ Tidak dapat menemukan kata "${word}" di kata dasar`);
+    this.dumpLogs();
     return this.originalWord;
   }
 
@@ -230,18 +259,18 @@ class Stemmer {
     const splitChar = ' ';
     // tokenizing into tokens
     this._words = this._input.split(splitChar);
-    this.addLog(`✔ Tokenisasi ${this._input} menjadi: [${this._words.join(', ')}]`);
+    this.addLog(`✔ Tokenisasi input: "${this._input}" menjadi: [${this._words.join(', ')}]`);
 
     // copy array input to result since we will only modify
     // the result rather than the input
     this._results = [...this._words];
     // normalized, casefolding
     this._results = this._results.map(word => this.normalizeString(word));
-    this.addLog(`✔ Casefolding [${this._words.join(', ')}] menjadi: [${this._results.join(', ')}]`);
+    this.addLog(`✔ Proses casefolding menjadi: [${this._results.join(', ')}]`);
 
     // stopword removal and remove word with length below 3 character
     this._results = this._results.filter(v => ! this.inStopWords(v) && v.length > 3);
-    this.addLog(`✔ Membuang stopwords menjadi: [${this._results.join(', ')}]`);
+    this.addLog(`✔ Prose pembuangan stopwords menjadi: [${this._results.join(', ')}]`);
 
     if (this._results.length > 0) {
       // process each word
