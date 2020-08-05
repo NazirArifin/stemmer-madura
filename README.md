@@ -43,7 +43,7 @@ import { Stemmer, Files } from 'stemmer-madura';
 
 const stemmer: Stemmer = new Stemmer;
 
-// load basewords and stopwords file
+// load basewords and stopwords file menggunakan bantuan Files
 const myFile: Files = new Files(stemmer);
 stemmer.baseWords = myFile.readWordsFile('base');
 stemmer.stopWords = myFile.readWordsFile('stop');
