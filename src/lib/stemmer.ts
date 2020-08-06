@@ -234,7 +234,7 @@ class Stemmer {
 
         if (value >= this._ngGramThreshold) {
           this._success = true;
-          this.addLog(`⭐ Menemukan kata "${baseWord}" untuk kata "${word}" di kata dasar`);
+          this.addLog(`⭐ Menemukan kata "${baseWord}" untuk kata "${word}" di kata dasar menggunakan N-Gram`);
           this.dumpLogs(); return baseWord;
         }
       }
