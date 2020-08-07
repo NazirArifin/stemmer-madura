@@ -89,7 +89,7 @@ const rules = [
     // N Prefix Modification
     {
         name: 'N Prefix Modification',
-        pattern: new RegExp('^n([ao].+)$'),
+        pattern: new RegExp('^n([aeo].+)$'),
         replacement: '', replacements: ['t$1', 'd$1', 'dh$1'],
         hasVariance: true, recover: false
     },
