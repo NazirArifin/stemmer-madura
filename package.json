@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com:NazirArifin/stemmer-madura.git"
+    "url": "git+https://github.com/NazirArifin/stemmer-madura.git"
   },
   "keywords": [
     "stemmer",
