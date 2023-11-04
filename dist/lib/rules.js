@@ -19,14 +19,14 @@ const rules = [
     // Plain Suffix Removal 1
     {
         name: 'Plain Suffix Removal 1',
-        pattern: new RegExp('^(.+)(ya|na|an|ih|eh|en|ah)$'),
+        pattern: new RegExp('^(.+)(ya|na|ni|an|ih|eh|en|ah)$'),
         replacement: '$1', replacements: [],
         hasVariance: false, recover: 'both'
     },
     // Plain Suffix Removal 2
     {
         name: 'Plain Suffix Removal 2',
-        pattern: new RegExp('^(.+)([ae])$'),
+        pattern: new RegExp('^(.+)([aei])$'),
         replacement: '$1', replacements: [],
         hasVariance: false, recover: 'both'
     },

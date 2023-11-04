@@ -29,14 +29,14 @@
   "author": "Mohammad Nazir Arifin",
   "license": "ISC",
   "devDependencies": {
-    "@types/minimist": "^1.2.0",
-    "@types/node": "^14.0.13",
-    "typescript": "^3.9.5"
+    "@types/minimist": "^1.2.4",
+    "@types/node": "^14.18.63",
+    "typescript": "^3.9.10"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.8"
   }
 }
