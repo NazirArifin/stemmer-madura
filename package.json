@@ -1,6 +1,6 @@
 {
   "name": "stemmer-madura",
-  "version": "0.1.10",
+  "version": "0.2.10",
   "description": "Stemmer untuk bahasa Madura menggunakan rule based",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

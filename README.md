@@ -28,8 +28,12 @@ const stemmer: Stemmer = new Stemmer;
 
 // load basewords and stopwords file menggunakan bantuan Files
 const myFile: Files = new Files(stemmer);
-stemmer.baseWords = myFile.readWordsFile('base');
-stemmer.stopWords = myFile.readWordsFile('stop');
+try {
+  stemmer.baseWords = files.readWordsFile('base');
+  stemmer.stopWords = files.readWordsFile('stop');
+} catch (error) {
+  console.log(error);
+}
 
 stemmer.input = 'nglerek';
 console.log(stemmer.stemWords());

@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import chalk = require('chalk');
 import Stemmer from './stemmer';
 
 class Files {
