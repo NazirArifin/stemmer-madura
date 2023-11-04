@@ -4,37 +4,20 @@
 
 Stemmer untuk bahasa Madura menggunakan rule-based.
 
-## Penggunaan Dalam Mode CLI
-
 ### Instalasi
 
-Agar dapat menggunakan stemmer-madura dalam CLI maka package harus diinstall global
+Stemmer-madura dapat diinstall menggunakan npm dengan perintah:
 
 ```sh
-npm install -g stemmer-madura
+npm install stemmer-madura
 ```
 
 ### Penggunaan
 
-Stemmer-madura akan mencari file kata dasar (defaultnya: __basewords.txt__) dan file kata umum (defaulnya: __stopwords.txt__) pada direktori aktif dimana perintah dijalankan. Dalam package ini disertakan file [basewords.txt](https://github.com/NazirArifin/stemmer-madura/raw/master/basewords.txt) dan [stopwords.txt](https://github.com/NazirArifin/stemmer-madura/raw/master/stopwords.txt). 
+Stemmer-madura akan mencari file kata dasar (defaultnya: __basewords.txt__) dan file kata umum (defaulnya: __stopwords.txt__) pada direktori aktif dimana perintah dijalankan. Jika file tidak ditemukan maka akan digunakan file default yang disertakan dalam package ini.
 
-Contoh penggunaan dalam mode CLI adalah:
+** Dalam package ini disertakan file [basewords.txt](https://github.com/NazirArifin/stemmer-madura/raw/master/basewords.txt) dan [stopwords.txt](https://github.com/NazirArifin/stemmer-madura/raw/master/stopwords.txt). 
 
-```sh
-stemmer-madura nglerek
-```
-
-Output yang dihasilkan terdiri dari dua baris yaitu kata input dan kata hasil stemming jika sukses dan hanya satu baris kata input jika gagal
-
-### Verbose
-
-Dengan menambahkan argument ```--verbose``` akan didapatkan informasi perubahan kata hingga didapatkan kata dasar.
-
-```sh
-stemmer-madura nglerek --verbose
-```
-
-## Penggunaan Sebagai Package
 
 Contoh berikut adalah kode TypeScript pengunaan stemmer-madura untuk melakukan proses stemming kata "nglerek"
 

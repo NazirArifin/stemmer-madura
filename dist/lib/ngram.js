@@ -1,13 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class NGram {
-    constructor(firstWord, secondWord, n = 2) {
-        this.firstGrams = [];
-        this.secondGrams = [];
-        this._firstWord = firstWord;
-        this._secondWord = secondWord;
-        this._gram = n;
-    }
     set firstWord(word) {
         this._firstWord = word;
     }
@@ -22,6 +15,13 @@ class NGram {
     }
     get secondWord() {
         return this._secondWord;
+    }
+    constructor(firstWord, secondWord, n = 2) {
+        this.firstGrams = [];
+        this.secondGrams = [];
+        this._firstWord = firstWord;
+        this._secondWord = secondWord;
+        this._gram = n;
     }
     /**
      * Dice Coefficient of Two Comparing Words

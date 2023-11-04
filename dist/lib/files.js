@@ -12,6 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
 class Files {
+    set baseWords(val) {
+        this._baseWords = val;
+    }
+    set stopWords(val) {
+        this._stopWords = val;
+    }
     constructor(stemmer) {
         /**
          * Name of baseword file containing base word
@@ -33,12 +39,6 @@ class Files {
         this._stopWords = 'stopwords.txt';
         this._stemmer = stemmer;
     }
-    set baseWords(val) {
-        this._baseWords = val;
-    }
-    set stopWords(val) {
-        this._stopWords = val;
-    }
     /**
      * Read baseword and stopword syncronously and then split into array
      *
@@ -55,16 +55,22 @@ class Files {
             if (data) {
                 return this.splitWordsFile(data);
             }
-            else {
-                file = path.join(cwd, 'node_modules', 'stemmer-madura', fwords);
-                data = fs.readFileSync(file, { encoding: 'utf-8' });
-                if (data) {
-                    return this.splitWordsFile(data);
-                }
-            }
         }
         catch (err) {
-            throw (404);
+            // Handle the error for the first attempt, if needed
+            // console.error('Error during the first attempt:', err);
+        }
+        // Attempt the second `fs.readFileSync` call outside the first catch block
+        file = path.join(cwd, 'node_modules', 'stemmer-madura', fwords);
+        try {
+            let data = fs.readFileSync(file, { encoding: 'utf-8' });
+            if (data) {
+                return this.splitWordsFile(data);
+            }
+        }
+        catch (err2) {
+            // Handle the error for the second attempt, if needed
+            // console.error('Error during the second attempt:', err2);
         }
         return [];
     }

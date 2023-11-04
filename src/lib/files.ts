@@ -53,20 +53,29 @@ class Files {
     const cwd: string = process.cwd();
     const fwords: string = type == 'base' ? this._baseWords : this._stopWords;
     let file: string = path.join(cwd, fwords);
+
     try {
       let data = fs.readFileSync(file, { encoding: 'utf-8' });
       if (data) {
         return this.splitWordsFile(data);
-      } else {
-        file = path.join(cwd, 'node_modules', 'stemmer-madura', fwords);
-        data = fs.readFileSync(file, { encoding: 'utf-8' });
-        if (data) {
-          return this.splitWordsFile(data);
-        }
       }
-    } catch(err) {
-      throw(404);
+    } catch (err) {
+      // Handle the error for the first attempt, if needed
+      // console.error('Error during the first attempt:', err);
     }
+    
+    // Attempt the second `fs.readFileSync` call outside the first catch block
+    file = path.join(cwd, 'node_modules', 'stemmer-madura', fwords);
+    try {
+      let data = fs.readFileSync(file, { encoding: 'utf-8' });
+      if (data) {
+        return this.splitWordsFile(data);
+      }
+    } catch (err2) {
+      // Handle the error for the second attempt, if needed
+      // console.error('Error during the second attempt:', err2);
+    }
+    
     return [];
   }
 
